@@ -8,3 +8,85 @@
   justify-content: center;
   font-size: 16px;
 }
+
+.calculator {
+  background-color: red;
+  width: 50vw;
+  border-radius: 1rem;
+  padding: 0.25rem;
+}
+
+.calculator-button {
+  width: calc((50vw / 4) - 0.5rem);
+  height: calc((50vw / 4) - 0.5rem);
+  font-size: 24px;
+  border: none;
+  margin: 0.25rem;
+  padding: 0;
+  /* cursor: pointer; */
+}
+
+.calculator-button:hover {
+  color: white;
+}
+
+.wide {
+  width: calc((50vw / 2) - 0.5rem);
+}
+
+.tall {
+  height: calc((50vw / 2) - 0.5rem);
+}
+
+.zero {
+  border-bottom-left-radius: 1rem;
+}
+
+.equals {
+  position: absolute;
+  transform: translateY(calc((50vw / 4) * -1));
+  border-bottom-right-radius: 1rem;
+}
+
+.display-area {
+  text-align: right;
+  background-color: black;
+  color: white;
+  padding: 0.25rem;
+  border-radius: 1rem 1rem 0 0;
+  margin: 0.25rem;
+}
+
+.display-input {
+  font-size: 32px;
+  padding: 0.25rem;
+}
+
+.display-output {
+  height: 1.5rem;
+  font-size: 14px;
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+}
+
+@media (orientation: landscape) {
+  .calculator {
+    width: 50vh;
+  }
+
+  .calculator-button {
+    width: calc((50vh / 4) - 0.5rem);
+    height: calc((50vh / 4) - 0.5rem);
+  }
+
+  .wide {
+    width: calc((50vh / 2) - 0.5rem);
+  }
+
+  .tall {
+    height: calc((50vh / 2) - 0.5rem);
+  }
+
+  .equals {
+    transform: translateY(calc((50vh / 4) * -1));
+  }
+}

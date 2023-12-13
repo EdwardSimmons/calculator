@@ -8,42 +8,25 @@ class Calculator extends Component {
     constructor(props) {
         super(props);
 
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+
         this.state = {
             buttons: [
                 {
-                    id: "zero",
-                    value: "0",
+                    id: "clear",
+                    value: null,
                     operation: null,
+                    class: "wide",
                 },
                 {
-                    id: "one",
-                    value: "1",
-                    operation: null,
+                    id: "divide",
+                    value: null,
+                    operation: "/",
                 },
                 {
-                    id: "two",
-                    value: "2",
-                    operation: null,
-                },
-                {
-                    id: "three",
-                    value: "3",
-                    operation: null,
-                },
-                {
-                    id: "four",
-                    value: "4",
-                    operation: null,
-                },
-                {
-                    id: "five",
-                    value: "5",
-                    operation: null,
-                },
-                {
-                    id: "six",
-                    value: "6",
-                    operation: null,
+                    id: "multiply",
+                    value: null,
+                    operation: "*",
                 },
                 {
                     id: "seven",
@@ -66,19 +49,45 @@ class Calculator extends Component {
                     operation: "+",
                 },
                 {
+                    id: "four",
+                    value: "4",
+                    operation: null,
+                },
+                {
+                    id: "five",
+                    value: "5",
+                    operation: null,
+                },
+                {
+                    id: "six",
+                    value: "6",
+                    operation: null,
+                },
+                {
                     id: "subtract",
                     value: null,
                     operation: "-",
                 },
                 {
-                    id: "multiply",
-                    value: null,
-                    operation: "*",
+                    id: "one",
+                    value: "1",
+                    operation: null,
                 },
                 {
-                    id: "divide",
-                    value: null,
-                    operation: "/",
+                    id: "two",
+                    value: "2",
+                    operation: null,
+                },
+                {
+                    id: "three",
+                    value: "3",
+                    operation: null,
+                },
+                {
+                    id: "zero",
+                    value: "0",
+                    operation: null,
+                    class: "wide zero",
                 },
                 {
                     id: "decimal",
@@ -89,11 +98,7 @@ class Calculator extends Component {
                     id: "equals",
                     value: null,
                     operation: "=",
-                },
-                {
-                    id: "clear",
-                    value: null,
-                    operation: null,
+                    class: "tall equals",
                 },
             ],
             input: "",
@@ -101,9 +106,19 @@ class Calculator extends Component {
         }
     }
 
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    };
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+
     handleExpression(buttonId) {
         const i = this.state.buttons.findIndex(btn => btn.id === buttonId);
         const pressedBtn = this.state.buttons[i];
+
+        console.log(buttonId, i, pressedBtn)
 
         // Handle clear button
         if (!pressedBtn?.value && !pressedBtn?.operation) {
@@ -123,6 +138,9 @@ class Calculator extends Component {
             // From fresh, anything is fine
             newInput = pressedBtn.operation || pressedBtn.value;
             newOutput = pressedBtn.operation || pressedBtn.value;
+        } else if (pressedBtn.operation === "=" && currentInput.split("").every(char => this.isOperation(char))) {
+            // Pressing "=" with no numbers having been pressed should result in nothing happening.
+            return;
         } else {
             if (pressedBtn.operation) {
                 if (pressedBtn.operation === "." && currentOutput.includes(".")) {
@@ -147,8 +165,17 @@ class Calculator extends Component {
                         // Last character was a number
                         if (pressedBtn.operation === "=") {
                             // Don't evaluate if "/" is the first character
-                            newOutput = newInput.slice(0, 1) === "/" ? currentOutput : evaluate(newInput);
-                            newInput += pressedBtn.operation;
+                            if (newInput.slice(0, 1) !== "/") {
+                                let solution = evaluate(newInput);
+                                // if (solution.includes(".")) {
+                                //     // set maximum decimal precision
+                                // } else {
+                                //     // use scientific notiation if beyond character limit
+                                // }
+                                // // old setup
+                                newOutput = solution
+                                newInput += pressedBtn.operation + solution;
+                            }
                         } else if (currentInput.includes("=")) {
                             // Pressed an operation after evaluating
                             newInput = currentOutput + pressedBtn.operation;
@@ -184,23 +211,44 @@ class Calculator extends Component {
     }
 
     isOperation(currentOutput) {
-        const operations = ["+", "-", "*", "/"];
+        const operations = ["+", "-", "*", "/", "="];
         // console.log("[ isOperation ]", currentOutput, !isNaN(operations.find(op => op === currentOutput)))
         return !!operations.find(op => op === currentOutput);
     }
 
+    handleKeyDown(e) {
+        if (e.repeat) return;
+        if (e.keyCode === 13) {
+            this.handleExpression("equals");
+            return;
+        }
+        if (e.keyCode === 27) {
+            this.handleExpression("clear");
+            return;
+        }
+        const btn = this.state.buttons.find(btn => {
+            let key = e.key.toLowerCase();
+            return btn.value === key || btn.operation === key;
+        });
+
+        if (!btn) return;
+
+        this.handleExpression(btn.id);
+    }
+
     render() {
         return (
-            <div className="container">
-                <div>
-                    <div>{this.state.input}</div>
-                    <div id="display">{this.state.output || "0"}</div>
+            <div className="calculator">
+                <div className="display-area">
+                    <div className="display-output">{this.state.input}</div>
+                    <div id="display" className="display-input">{this.state.output || "0"}</div>
                 </div>
                 {this.state.buttons.map((button, index) => {
                     return <CalculatorButton
                         id={button.id}
                         value={button.value}
                         operation={button.operation}
+                        class={button.class}
                         key={index}
                         handleExpression={this.handleExpression.bind(this)}
                     />
