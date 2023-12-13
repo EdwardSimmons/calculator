@@ -8,6 +8,11 @@ class App extends Component {
     return (
       <div className="app">
         <Calculator />
+        <text className="signature">
+          Designed and coded by:
+          <br />
+          Edward Simmons
+        </text>
       </div>
     );
   }

@@ -16,17 +16,19 @@ class Calculator extends Component {
                     id: "clear",
                     value: null,
                     operation: null,
-                    class: "wide",
+                    class: "wide clear",
                 },
                 {
                     id: "divide",
                     value: null,
                     operation: "/",
+                    class: "operand",
                 },
                 {
                     id: "multiply",
                     value: null,
                     operation: "*",
+                    class: "operand",
                 },
                 {
                     id: "seven",
@@ -47,6 +49,7 @@ class Calculator extends Component {
                     id: "add",
                     value: null,
                     operation: "+",
+                    class: "operand",
                 },
                 {
                     id: "four",
@@ -67,6 +70,7 @@ class Calculator extends Component {
                     id: "subtract",
                     value: null,
                     operation: "-",
+                    class: "operand",
                 },
                 {
                     id: "one",
@@ -164,8 +168,8 @@ class Calculator extends Component {
                     } else {
                         // Last character was a number
                         if (pressedBtn.operation === "=") {
-                            // Don't evaluate if "/" is the first character
-                            if (newInput.slice(0, 1) !== "/") {
+                            // Don't evaluate if "*" or "/" is the first character
+                            if (newInput.slice(0, 1) !== "/" && newInput.slice(0, 1) !== "*") {
                                 let solution = evaluate(newInput);
                                 // if (solution.includes(".")) {
                                 //     // set maximum decimal precision
